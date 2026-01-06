@@ -1,0 +1,28 @@
+name: Compile Gradle Plugin
+on: [push, workflow_dispatch] # Запуск при обновлении кода или вручную
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Копируем код
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4 # Ставим нужную версию Java
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew # Делаем файл gradlew исполняемым
+
+      - name: Build with Gradle
+        run: ./gradlew build # Запускаем сборку Gradle
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4 # Забираем готовый JAR
+        with:
+          name: Compiled-Jar
+          path: build/libs/*.jar
